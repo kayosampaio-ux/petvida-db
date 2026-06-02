@@ -104,25 +104,24 @@ BEGIN
 END $$
 
 
+DELIMITER $$
+
 DROP PROCEDURE IF EXISTS sp_cadastrar_animal $$
+
 CREATE PROCEDURE sp_cadastrar_animal(
     IN p_nome VARCHAR(100),
-    IN p_especie_id INT,
-    IN p_raca VARCHAR(100),
+    IN p_especie VARCHAR(50),
+    IN p_raca VARCHAR(80),
     IN p_nascimento DATE,
     IN p_tutor_id INT
 )
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM especies WHERE id = p_especie_id) THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Especie nao encontrada';
-    END IF;
-
     IF NOT EXISTS (SELECT 1 FROM tutores WHERE id = p_tutor_id) THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Tutor nao encontrado';
     END IF;
 
-    INSERT INTO animais (nome, especie_id, raca, data_nascimento, tutor_id)
-    VALUES (p_nome, p_especie_id, p_raca, p_nascimento, p_tutor_id);
+    INSERT INTO animais (nome, especie, raca, data_nascimento, tutor_id)
+    VALUES (p_nome, p_especie, p_raca, p_nascimento, p_tutor_id);
 
     SELECT LAST_INSERT_ID() AS animal_criado_id;
 END $$
